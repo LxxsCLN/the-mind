@@ -64,13 +64,13 @@ html, body {
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
-  padding: 24px 20px;
-  gap: 20px;
+  padding: 32px 20px;
+  gap: 28px;
   min-height: 100%;
 }
 
 .title {
-  font-size: 2.4rem;
+  font-size: 2.8rem;
   font-weight: 800;
   letter-spacing: -1px;
   background: linear-gradient(135deg, var(--primary) 0%, #a78bfa 100%);
@@ -83,13 +83,30 @@ html, body {
   color: var(--text-dim);
   font-size: 0.95rem;
   text-align: center;
+  margin-top: -12px;
 }
 
-.lobby-section {
+.lobby-card {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  background: var(--bg-light);
+  border: 1px solid var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+#lobby-menu {
+  min-height: 310px;
+}
+#lobby-menu .tab-content {
+  flex: 1;
+}
+#lobby-menu .tab-content .input-group {
+  margin: auto 0;
+}
+#lobby-menu .tab-content .btn {
+  flex: 0 0 auto;
 }
 
 .input-group {
@@ -159,10 +176,38 @@ html, body {
   color: #fff;
 }
 
-.join-section {
+/* Lobby tabs */
+.lobby-tabs {
+  display: flex;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 3px;
+  margin-bottom: 4px;
+}
+.lobby-tab {
+  flex: 1;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+.lobby-tab.active {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+.lobby-tab:not(.active):hover {
+  color: var(--text);
+}
+.tab-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
 .error-text {
@@ -186,9 +231,9 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: var(--surface);
-  padding: 16px;
-  border-radius: var(--radius);
+  background: var(--bg);
+  padding: 18px;
+  border-radius: var(--radius-sm);
 }
 .room-code-label {
   font-size: 0.8rem;
@@ -221,8 +266,8 @@ html, body {
 
 /* Players list */
 .players-list {
-  background: var(--surface);
-  border-radius: var(--radius);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
   padding: 16px;
 }
 .players-list h3 {
@@ -590,6 +635,47 @@ html, body {
 .game-message.success-msg {
   color: var(--success);
   font-weight: 600;
+}
+
+/* Mistake banner */
+.mistake-banner {
+  background: rgba(255, 71, 87, 0.12);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: fadeIn 0.3s ease;
+}
+.mistake-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.mistake-detail {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.mistake-card {
+  display: inline-block;
+  background: var(--card-bg);
+  color: var(--card-text);
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  min-width: 22px;
+  text-align: center;
+}
+.mistake-name {
+  color: var(--text);
+  font-weight: 600;
+}
+.mistake-lives {
+  font-size: 0.8rem;
+  color: var(--life-color);
+  margin-top: 2px;
 }
 
 /* ---- Shuriken area ---- */

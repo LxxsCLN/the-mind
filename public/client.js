@@ -16,11 +16,14 @@ const screenGame = $('#screen-game');
 // Lobby
 const lobbyMenu = $('#lobby-menu');
 const lobbyRoom = $('#lobby-room');
-const nicknameInput = $('#nickname-input');
+const nicknameInputCreate = $('#nickname-input-create');
+const nicknameInputJoin = $('#nickname-input-join');
 const roomCodeInput = $('#room-code-input');
 const btnCreate = $('#btn-create');
-const btnJoinToggle = $('#btn-join-toggle');
-const joinSection = $('#join-section');
+const tabCreate = $('#tab-create');
+const tabJoin = $('#tab-join');
+const tabCreateContent = $('#tab-create-content');
+const tabJoinContent = $('#tab-join-content');
 const btnJoin = $('#btn-join');
 const lobbyError = $('#lobby-error');
 const roomCodeValue = $('#room-code-value');
@@ -107,15 +110,28 @@ function showGameMessage(msg, type, duration) {
   }
 }
 
+function showGameMessageHtml(html) {
+  if (messageTimeout) clearTimeout(messageTimeout);
+  gameMessage.innerHTML = html;
+  gameMessage.className = 'game-message';
+}
+
+function clearGameMessage() {
+  if (messageTimeout) clearTimeout(messageTimeout);
+  gameMessage.textContent = '';
+  gameMessage.innerHTML = '';
+  gameMessage.className = 'game-message';
+}
+
 // ---------------------------------------------------------------------------
 // Lobby events
 // ---------------------------------------------------------------------------
 
 btnCreate.addEventListener('click', () => {
-  const nickname = nicknameInput.value.trim();
+  const nickname = nicknameInputCreate.value.trim();
   if (!nickname) {
     showError('Please enter a nickname');
-    nicknameInput.focus();
+    nicknameInputCreate.focus();
     return;
   }
   btnCreate.disabled = true;
@@ -129,33 +145,49 @@ btnCreate.addEventListener('click', () => {
   });
 });
 
-btnJoinToggle.addEventListener('click', () => {
-  joinSection.classList.toggle('hidden');
-  if (!joinSection.classList.contains('hidden')) {
-    roomCodeInput.focus();
-  }
+// Sync nickname between tabs
+nicknameInputCreate.addEventListener('input', () => {
+  nicknameInputJoin.value = nicknameInputCreate.value;
+});
+nicknameInputJoin.addEventListener('input', () => {
+  nicknameInputCreate.value = nicknameInputJoin.value;
+});
+
+tabCreate.addEventListener('click', () => {
+  tabCreate.classList.add('active');
+  tabJoin.classList.remove('active');
+  tabCreateContent.classList.remove('hidden');
+  tabJoinContent.classList.add('hidden');
+});
+
+tabJoin.addEventListener('click', () => {
+  tabJoin.classList.add('active');
+  tabCreate.classList.remove('active');
+  tabJoinContent.classList.remove('hidden');
+  tabCreateContent.classList.add('hidden');
+  roomCodeInput.focus();
 });
 
 btnJoin.addEventListener('click', () => joinRoom());
 roomCodeInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') joinRoom();
 });
-nicknameInput.addEventListener('keydown', (e) => {
+nicknameInputCreate.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') btnCreate.click();
+});
+nicknameInputJoin.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
-    if (!joinSection.classList.contains('hidden') && roomCodeInput.value.trim()) {
-      joinRoom();
-    } else {
-      btnCreate.click();
-    }
+    if (roomCodeInput.value.trim()) joinRoom();
+    else roomCodeInput.focus();
   }
 });
 
 function joinRoom() {
-  const nickname = nicknameInput.value.trim();
+  const nickname = nicknameInputJoin.value.trim();
   const code = roomCodeInput.value.trim().toUpperCase();
   if (!nickname) {
     showError('Please enter a nickname');
-    nicknameInput.focus();
+    nicknameInputJoin.focus();
     return;
   }
   if (!code || code.length < 8) {
@@ -252,9 +284,15 @@ socket.on('lobby_update', (lobby) => {
 // ---------------------------------------------------------------------------
 
 socket.on('game_state', (state) => {
+  const isNewGame = !gameState || gameState.level !== state.level || gameState.state !== state.state;
   gameState = state;
   myId = state.myId;
   isHost = state.players.find(p => p.id === myId)?.isHost || false;
+
+  // Clear stale messages when transitioning states (new level, new game, etc.)
+  if (isNewGame) {
+    clearGameMessage();
+  }
 
   showScreen(screenGame);
   renderGame();
@@ -452,30 +490,37 @@ socket.on('game_event', (event) => {
     case 'card_played':
       pileCard.classList.remove('mistake');
       showGameMessage(`${event.playedBy} played ${event.card}`, null, 2000);
-      // Quick pulse on pile
       pileCard.classList.add('pulse');
       setTimeout(() => pileCard.classList.remove('pulse'), 600);
       break;
 
-    case 'mistake':
+    case 'mistake': {
       pileCard.classList.add('mistake');
       setTimeout(() => pileCard.classList.remove('mistake'), 1000);
-      const lostCards = event.lowerCards.map(lc => `${lc.nickname}:${lc.card}`).join(', ');
-      showGameMessage(
-        `${event.playedBy} played ${event.card} — lost cards: ${lostCards}. Lives: ${event.livesRemaining}`,
-        'mistake-msg',
-        4000
+      const lostList = event.lowerCards.map(lc =>
+        `<span class="mistake-card">${lc.card}</span> <span class="mistake-name">${escapeHtml(lc.nickname)}</span>`
+      ).join(', ');
+      showGameMessageHtml(
+        `<div class="mistake-banner">` +
+        `<div class="mistake-title">${escapeHtml(event.playedBy)} played <span class="mistake-card">${event.card}</span></div>` +
+        `<div class="mistake-detail">Lost cards: ${lostList}</div>` +
+        `<div class="mistake-lives">${'♥'.repeat(event.livesRemaining)}${'♡'.repeat((gameState ? gameState.maxLives : 5) - event.livesRemaining)} ${event.livesRemaining} lives left</div>` +
+        `</div>`
       );
-      // Vibrate on mobile if available
       if (navigator.vibrate) navigator.vibrate(200);
       break;
+    }
 
     case 'level_complete': {
-      let rewardText = '';
-      if (event.reward === 'star') rewardText = 'Reward: +1 Throwing Star ★';
-      else if (event.reward === 'life') rewardText = 'Reward: +1 Life ♥';
-      else rewardText = 'No reward this level.';
-      levelCompleteReward.textContent = rewardText;
+      if (event.reward === 'star') {
+        levelCompleteReward.textContent = 'Reward: +1 Throwing Star ★';
+        levelCompleteReward.classList.remove('hidden');
+      } else if (event.reward === 'life') {
+        levelCompleteReward.textContent = 'Reward: +1 Life ♥';
+        levelCompleteReward.classList.remove('hidden');
+      } else {
+        levelCompleteReward.classList.add('hidden');
+      }
 
       if (event.won) {
         levelCompleteTitle.textContent = 'You Won!';
@@ -623,6 +668,7 @@ btnReturnLobby.addEventListener('click', () => {
 socket.on('return_to_lobby', () => {
   gameState = null;
   hideAllOverlays();
+  clearGameMessage();
   showScreen(screenLobby);
   lobbyMenu.classList.add('hidden');
   lobbyRoom.classList.remove('hidden');

@@ -1,171 +1,249 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <title>The Mind</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>The Mind</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ====== LOBBY SCREEN ====== -->
+    <div id="screen-lobby" class="screen active">
+      <div class="lobby-container">
+        <h1 class="title">The Mind</h1>
+        <p class="subtitle">Let's become one...!</p>
 
-  <!-- ====== LOBBY SCREEN ====== -->
-  <div id="screen-lobby" class="screen active">
-    <div class="lobby-container">
-      <h1 class="title">The Mind</h1>
-      <p class="subtitle">Play together. No talking. Just feel it.</p>
-
-      <!-- Initial choice -->
-      <div id="lobby-menu" class="lobby-section">
-        <div class="input-group">
-          <label for="nickname-input">Nickname</label>
-          <input type="text" id="nickname-input" placeholder="Enter your name" maxlength="16" autocomplete="off">
-        </div>
-        <div class="btn-row">
-          <button id="btn-create" class="btn btn-primary">Create Game</button>
-          <button id="btn-join-toggle" class="btn btn-secondary">Join Game</button>
-        </div>
-        <div id="join-section" class="join-section hidden">
-          <div class="input-group">
-            <label for="room-code-input">Room Code</label>
-            <input type="text" id="room-code-input" placeholder="e.g. AB12CD34" maxlength="8" autocomplete="off" style="text-transform: uppercase;">
+        <!-- Tabs + forms -->
+        <div id="lobby-menu" class="lobby-card">
+          <div class="lobby-tabs">
+            <button id="tab-create" class="lobby-tab active">
+              Create Game
+            </button>
+            <button id="tab-join" class="lobby-tab">Join Game</button>
           </div>
-          <button id="btn-join" class="btn btn-primary">Join</button>
+          <div id="tab-create-content" class="tab-content">
+            <div class="input-group">
+              <label for="nickname-input-create">Nickname</label>
+              <input
+                type="text"
+                id="nickname-input-create"
+                class="nickname-input"
+                placeholder="Enter your name"
+                maxlength="16"
+                autocomplete="off"
+              />
+            </div>
+            <button id="btn-create" class="btn btn-primary">Create Game</button>
+          </div>
+          <div id="tab-join-content" class="tab-content hidden">
+            <div class="input-group">
+              <label for="nickname-input-join">Nickname</label>
+              <input
+                type="text"
+                id="nickname-input-join"
+                class="nickname-input"
+                placeholder="Enter your name"
+                maxlength="16"
+                autocomplete="off"
+              />
+            </div>
+            <div class="input-group">
+              <label for="room-code-input">Room Code</label>
+              <input
+                type="text"
+                id="room-code-input"
+                placeholder="e.g. AB12CD34"
+                maxlength="8"
+                autocomplete="off"
+                style="text-transform: uppercase"
+              />
+            </div>
+            <button id="btn-join" class="btn btn-primary">Join Game</button>
+          </div>
+          <p id="lobby-error" class="error-text hidden"></p>
         </div>
-        <p id="lobby-error" class="error-text hidden"></p>
-      </div>
 
-      <!-- Waiting room -->
-      <div id="lobby-room" class="lobby-section hidden">
-        <div class="room-code-display">
-          <span class="room-code-label">Room Code</span>
-          <span id="room-code-value" class="room-code-value"></span>
-          <button id="btn-copy-code" class="btn-icon" title="Copy code">
-            <svg id="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            <svg id="check-icon" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <!-- Waiting room -->
+        <div id="lobby-room" class="lobby-card hidden">
+          <div class="room-code-display">
+            <span class="room-code-label">Room Code</span>
+            <span id="room-code-value" class="room-code-value"></span>
+            <button id="btn-copy-code" class="btn-icon" title="Copy code">
+              <svg
+                id="copy-icon"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path
+                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                />
+              </svg>
+              <svg
+                id="check-icon"
+                class="hidden"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="players-list">
+            <h3>Players</h3>
+            <ul id="players-list"></ul>
+          </div>
+          <button id="btn-start" class="btn btn-primary hidden">
+            Start Game
           </button>
+          <p id="room-status" class="status-text">
+            Waiting for host to start...
+          </p>
         </div>
-        <div class="players-list">
-          <h3>Players</h3>
-          <ul id="players-list"></ul>
-        </div>
-        <button id="btn-start" class="btn btn-primary hidden">Start Game</button>
-        <p id="room-status" class="status-text">Waiting for host to start...</p>
       </div>
     </div>
-  </div>
 
-  <!-- ====== GAME SCREEN ====== -->
-  <div id="screen-game" class="screen">
-    <div class="game-container">
-
-      <!-- Top bar: level, lives, stars -->
-      <div class="game-header">
-        <div class="header-left">
-          <div class="stat">
-            <span class="stat-label">Level</span>
-            <span id="game-level" class="stat-value">1</span>
-            <span id="game-total-levels" class="stat-sub">/12</span>
+    <!-- ====== GAME SCREEN ====== -->
+    <div id="screen-game" class="screen">
+      <div class="game-container">
+        <!-- Top bar: level, lives, stars -->
+        <div class="game-header">
+          <div class="header-left">
+            <div class="stat">
+              <span class="stat-label">Level</span>
+              <span id="game-level" class="stat-value">1</span>
+              <span id="game-total-levels" class="stat-sub">/12</span>
+            </div>
+          </div>
+          <div class="header-center">
+            <div class="stat lives-stat">
+              <span class="stat-label">Lives</span>
+              <span id="game-lives" class="stat-icons"></span>
+            </div>
+            <div class="stat stars-stat">
+              <span class="stat-label">Stars</span>
+              <span id="game-stars" class="stat-icons"></span>
+            </div>
+          </div>
+          <div class="header-right">
+            <button id="btn-history" class="btn-icon-sm" title="Card history">
+              History
+            </button>
           </div>
         </div>
-        <div class="header-center">
-          <div class="stat lives-stat">
-            <span class="stat-label">Lives</span>
-            <span id="game-lives" class="stat-icons"></span>
+
+        <!-- Players bar -->
+        <div id="players-bar" class="players-bar"></div>
+
+        <!-- Card history drawer -->
+        <div id="history-panel" class="history-panel hidden">
+          <div class="history-header">
+            <h3>Card History</h3>
+            <button id="btn-close-history" class="btn-icon-sm">Close</button>
           </div>
-          <div class="stat stars-stat">
-            <span class="stat-label">Stars</span>
-            <span id="game-stars" class="stat-icons"></span>
+          <div id="history-list" class="history-list"></div>
+        </div>
+
+        <!-- Play area -->
+        <div class="play-area">
+          <div id="play-pile" class="play-pile">
+            <div id="pile-card" class="pile-card empty">
+              <span id="pile-card-value">—</span>
+            </div>
           </div>
+          <div id="game-message" class="game-message"></div>
         </div>
-        <div class="header-right">
-          <button id="btn-history" class="btn-icon-sm" title="Card history">History</button>
+
+        <!-- Shuriken button -->
+        <div class="shuriken-area">
+          <button
+            id="btn-shuriken"
+            class="btn-shuriken"
+            title="Propose throwing star"
+          >
+            <span class="shuriken-icon">★</span>
+          </button>
+          <div id="shuriken-status" class="shuriken-status hidden"></div>
         </div>
-      </div>
 
-      <!-- Players bar -->
-      <div id="players-bar" class="players-bar"></div>
-
-      <!-- Card history drawer -->
-      <div id="history-panel" class="history-panel hidden">
-        <div class="history-header">
-          <h3>Card History</h3>
-          <button id="btn-close-history" class="btn-icon-sm">Close</button>
-        </div>
-        <div id="history-list" class="history-list"></div>
-      </div>
-
-      <!-- Play area -->
-      <div class="play-area">
-        <div id="play-pile" class="play-pile">
-          <div id="pile-card" class="pile-card empty">
-            <span id="pile-card-value">—</span>
-          </div>
-        </div>
-        <div id="game-message" class="game-message"></div>
-      </div>
-
-      <!-- Shuriken button -->
-      <div class="shuriken-area">
-        <button id="btn-shuriken" class="btn-shuriken" title="Propose throwing star">
-          <span class="shuriken-icon">★</span>
-        </button>
-        <div id="shuriken-status" class="shuriken-status hidden"></div>
-      </div>
-
-      <!-- Shuriken vote overlay -->
-      <div id="shuriken-vote-overlay" class="overlay hidden">
-        <div class="overlay-content">
-          <h2>★ Throwing Star Proposed</h2>
-          <p id="shuriken-proposer-text"></p>
-          <p class="overlay-sub">Everyone discards their lowest card.</p>
-          <div id="shuriken-vote-status" class="vote-status"></div>
-          <div id="shuriken-vote-buttons" class="btn-row">
-            <button id="btn-shuriken-agree" class="btn btn-primary">Agree</button>
-            <button id="btn-shuriken-decline" class="btn btn-danger">Decline</button>
+        <!-- Shuriken vote overlay -->
+        <div id="shuriken-vote-overlay" class="overlay hidden">
+          <div class="overlay-content">
+            <h2>★ Throwing Star Proposed</h2>
+            <p id="shuriken-proposer-text"></p>
+            <p class="overlay-sub">Everyone discards their lowest card.</p>
+            <div id="shuriken-vote-status" class="vote-status"></div>
+            <div id="shuriken-vote-buttons" class="btn-row">
+              <button id="btn-shuriken-agree" class="btn btn-primary">
+                Agree
+              </button>
+              <button id="btn-shuriken-decline" class="btn btn-danger">
+                Decline
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Shuriken reveal overlay -->
-      <div id="shuriken-reveal-overlay" class="overlay hidden">
-        <div class="overlay-content shuriken-reveal-content">
-          <h2>★ Throwing Star Used</h2>
-          <p class="overlay-sub">Lowest cards discarded:</p>
-          <div id="shuriken-reveal-cards" class="shuriken-reveal-cards"></div>
-          <button id="btn-close-reveal" class="btn btn-primary">OK</button>
+        <!-- Shuriken reveal overlay -->
+        <div id="shuriken-reveal-overlay" class="overlay hidden">
+          <div class="overlay-content shuriken-reveal-content">
+            <h2>★ Throwing Star Used</h2>
+            <p class="overlay-sub">Lowest cards discarded:</p>
+            <div id="shuriken-reveal-cards" class="shuriken-reveal-cards"></div>
+            <button id="btn-close-reveal" class="btn btn-primary">OK</button>
+          </div>
+        </div>
+
+        <!-- Player hand -->
+        <div id="hand-area" class="hand-area">
+          <div id="hand" class="hand"></div>
+        </div>
+
+        <!-- Level complete overlay -->
+        <div id="level-complete-overlay" class="overlay hidden">
+          <div class="overlay-content">
+            <h2 id="level-complete-title">Level Complete!</h2>
+            <p id="level-complete-reward"></p>
+            <button id="btn-next-level" class="btn btn-primary hidden">
+              Next Level
+            </button>
+            <p id="level-complete-wait" class="status-text">
+              Waiting for host...
+            </p>
+          </div>
+        </div>
+
+        <!-- Game over overlay -->
+        <div id="game-over-overlay" class="overlay hidden">
+          <div class="overlay-content">
+            <h2 id="game-over-title">Game Over</h2>
+            <p id="game-over-message"></p>
+            <button id="btn-return-lobby" class="btn btn-primary hidden">
+              Return to Lobby
+            </button>
+          </div>
         </div>
       </div>
-
-      <!-- Player hand -->
-      <div id="hand-area" class="hand-area">
-        <div id="hand" class="hand"></div>
-      </div>
-
-      <!-- Level complete overlay -->
-      <div id="level-complete-overlay" class="overlay hidden">
-        <div class="overlay-content">
-          <h2 id="level-complete-title">Level Complete!</h2>
-          <p id="level-complete-reward"></p>
-          <button id="btn-next-level" class="btn btn-primary hidden">Next Level</button>
-          <p id="level-complete-wait" class="status-text">Waiting for host...</p>
-        </div>
-      </div>
-
-      <!-- Game over overlay -->
-      <div id="game-over-overlay" class="overlay hidden">
-        <div class="overlay-content">
-          <h2 id="game-over-title">Game Over</h2>
-          <p id="game-over-message"></p>
-          <button id="btn-return-lobby" class="btn btn-primary hidden">Return to Lobby</button>
-        </div>
-      </div>
-
     </div>
-  </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="client.js"></script>
-</body>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+  </body>
 </html>
