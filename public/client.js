@@ -537,7 +537,7 @@ socket.on('game_event', (event) => {
       break;
 
     case 'shuriken_proposed':
-      showGameMessage(`${event.proposer} wants to use a throwing star`, null, 0);
+      // Vote overlay handles this — no persistent message needed
       break;
 
     case 'shuriken_used':
